@@ -23,6 +23,10 @@ public class Usuario {
         this.profesion = profesion;
         this.fechaRegistro = fechaRegistro;
     }
+    
+    public Usuario(){
+        
+    }
 
     public boolean isEliminado() {
         return eliminado;

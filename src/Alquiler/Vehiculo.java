@@ -3,7 +3,7 @@ public class Vehiculo {
     private boolean eliminado = false;
     private String placa;
     private String marca;
-    private String modelo;
+    private int modelo;
     private String motor;
     private String chasis;
     private short numero_asientos;
@@ -11,7 +11,7 @@ public class Vehiculo {
     private String color;
     private boolean alquilado = false;
 
-    public Vehiculo(String placa, String marca, String modelo, String motor, String chasis, short numero_asientos, int centimetros_cubicos, String color) {
+    public Vehiculo(String placa, String marca, int modelo, String motor, String chasis, short numero_asientos, int centimetros_cubicos, String color) {
         this.placa = placa;
         this.marca = marca;
         this.modelo = modelo;
@@ -20,6 +20,10 @@ public class Vehiculo {
         this.numero_asientos = numero_asientos;
         this.centimetros_cubicos = centimetros_cubicos;
         this.color = color;
+    }
+    
+    public Vehiculo(){
+        
     }
 
     public boolean isEliminado() {
@@ -46,11 +50,11 @@ public class Vehiculo {
         this.marca = marca;
     }
 
-    public String getModelo() {
+    public int getModelo() {
         return modelo;
     }
 
-    public void setModelo(String modelo) {
+    public void setModelo(int modelo) {
         this.modelo = modelo;
     }
 
