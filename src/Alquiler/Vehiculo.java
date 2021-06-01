@@ -1,6 +1,6 @@
 package Alquiler;
 public class Vehiculo {
-    private boolean eliminado = false;
+    private boolean activo = true;
     private String placa;
     private String marca;
     private int modelo;
@@ -26,12 +26,12 @@ public class Vehiculo {
         
     }
 
-    public boolean isEliminado() {
-        return eliminado;
+    public boolean isActivo() {
+        return activo;
     }
 
-    public void setEliminado(boolean eliminado) {
-        this.eliminado = eliminado;
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     public String getPlaca() {
@@ -109,7 +109,7 @@ public class Vehiculo {
     @Override
     public String toString() {
         return "Vehiculo{" + 
-                "eliminado=" + eliminado + 
+                "eliminado=" + activo + 
                 ", placa=" + placa + 
                 ", marca=" + marca + 
                 ", modelo=" + modelo + 

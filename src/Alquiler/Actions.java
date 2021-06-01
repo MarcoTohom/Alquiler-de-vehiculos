@@ -9,9 +9,10 @@ public class Actions {
         Usuario usuario = new Usuario();
         short[] fecha = new short[3];
         System.out.println("DPI:");
-        usuario.setDpi(in.nextInt());
+        usuario.setDpi(in.nextLong());
         System.out.println("NIT:");
         usuario.setNit(in.nextInt());
+        in.nextLine();
         System.out.println("Direccion:");
         usuario.setDireccion(in.nextLine());
         System.out.println("Nombres:");

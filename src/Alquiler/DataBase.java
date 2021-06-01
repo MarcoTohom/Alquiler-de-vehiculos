@@ -9,18 +9,14 @@ import java.util.logging.Logger;
 public class DataBase {
 
     public RandomAccessFile dataBase;
-
-    /*
-	 * Se abre el archivo recibiendo un nombre
-     */
+    public File archivo;
+    
     public void connectDataBase(String nombreArchivo) throws IOException {
-        dataBase = new RandomAccessFile(nombreArchivo, "rw");
+        archivo = new File(nombreArchivo);
+        dataBase = new RandomAccessFile(archivo, "rw");
         dataBase.seek(0);
     }
 
-    /*
-	 * Se cierra el archivo
-     */
     public void disconnectDataBase() throws IOException {
         if (dataBase != null) {
             dataBase.close();
@@ -29,9 +25,9 @@ public class DataBase {
 
     public void create(Usuario usuario) {
         try {
-            connectDataBase("/Usuarios/" + usuario.getDpi() + ".txt");
-            dataBase.writeBoolean(usuario.isEliminado());
-            dataBase.writeInt(usuario.getDpi());
+            connectDataBase("Usuarios/"+usuario.getDpi() + ".txt");
+            dataBase.writeBoolean(usuario.isActivo());
+            dataBase.writeLong(usuario.getDpi());
             dataBase.writeInt(usuario.getNit());
             dataBase.writeUTF(setLength(usuario.getNombres(), 30));
             dataBase.writeUTF(setLength(usuario.getApellidos(), 40));
@@ -52,8 +48,8 @@ public class DataBase {
 
     public void create(Vehiculo vehiculo) {
         try {
-            connectDataBase("/Vehiculos/" + vehiculo.getPlaca() + ".txt");
-            dataBase.writeBoolean(vehiculo.isEliminado());
+            connectDataBase("Vehiculos/" + vehiculo.getPlaca() + ".txt");
+            dataBase.writeBoolean(vehiculo.isActivo());
             dataBase.writeUTF(setLength(vehiculo.getPlaca(), 7));
             dataBase.writeUTF(setLength(vehiculo.getMarca(), 10));
             dataBase.writeInt(vehiculo.getModelo());
@@ -70,22 +66,54 @@ public class DataBase {
     }
 
     public void showUsuarios() {
-        File folder = new File("/Usuarios/");
+        File folder = new File("Usuarios/");
         File[] listOfFiles = folder.listFiles();
 
         for (File file : listOfFiles) {
             if (file.isFile()) {
                 try {
+                    System.out.println(file.getName());
                     connectDataBase(file.getName());
                     System.out.println("");
-                    System.out.println(dataBase.readByte());
-                    System.out.println(dataBase.readUTF());
-                    System.out.println(dataBase.readUTF());
-                    System.out.println(dataBase.readInt());
+                    boolean active = dataBase.readBoolean();
+                    if (active) {
+                        System.out.println("DPI: " +          dataBase.readLong());
+                        System.out.println("NIT: " +          dataBase.readInt());
+                        System.out.println("Nombres: " +      dataBase.readUTF());
+                        System.out.println("Apellidos: " +    dataBase.readUTF());
+                        System.out.println("Dirección: " +    dataBase.readUTF());
+                        System.out.println("F Nacimineto: " + dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
+                        System.out.println("F Registro: " +   dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
+                    }else{
+                    }
                     disconnectDataBase();
                 } catch (IOException ex) {
                     Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            }
+        }
+    }
+    
+    public void showVehiculos(){
+        File folder = new File("Vehiculos/");
+        File[] listOfFiles = folder.listFiles();
+        for (File file : listOfFiles) {
+            try {
+                connectDataBase(file.getName());
+                System.out.println("");
+                if (dataBase.readBoolean()) {
+                    System.out.println("Placa: " + dataBase.readUTF());
+                    System.out.println("Marca: " + dataBase.readUTF());
+                    System.out.println("Modelo: " + dataBase.readInt());
+                    System.out.println("Motor: " + dataBase.readUTF());
+                    System.out.println("Chasis: " + dataBase.readUTF());
+                    System.out.println("Asientos: " + dataBase.readShort());
+                    System.out.println("Centimetros cubicos: " + dataBase.readInt());
+                    System.out.println("Color: " + dataBase.readUTF());
+                }
+                disconnectDataBase();
+            } catch (IOException ex) {
+                Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

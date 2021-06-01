@@ -2,18 +2,18 @@ package Alquiler;
 
 public class Usuario {
 
-    private boolean eliminado = false;
-    private int dpi;
+    private boolean activo = true;
+    private long dpi;
     private int nit;
-    private String direccion;
-    private short[] fechaNacimiento;
     private String nombres;
     private String apellidos;
     private String profesion;
+    private String direccion;
+    private short[] fechaNacimiento;
     private short[] fechaRegistro;
     private boolean alquilando = false;
 
-    public Usuario(int dpi, int nit, String direccion, short[] fechaNacimiento, String nombres, String apellidos, String profesion, short[] fechaRegistro) {
+    public Usuario(long dpi, int nit, String direccion, short[] fechaNacimiento, String nombres, String apellidos, String profesion, short[] fechaRegistro) {
         this.dpi = dpi;
         this.nit = nit;
         this.direccion = direccion;
@@ -28,19 +28,19 @@ public class Usuario {
         
     }
 
-    public boolean isEliminado() {
-        return eliminado;
+    public boolean isActivo() {
+        return activo;
     }
 
-    public void setEliminado(boolean eliminado) {
-        this.eliminado = eliminado;
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
-    public int getDpi() {
+    public long getDpi() {
         return dpi;
     }
 
-    public void setDpi(int dpi) {
+    public void setDpi(long dpi) {
         this.dpi = dpi;
     }
 
@@ -111,7 +111,7 @@ public class Usuario {
     @Override
     public String toString() {
         return "Usuario{" + 
-                "eliminado=" + eliminado + 
+                "eliminado=" + activo + 
                 ", dpi=" + dpi + 
                 ", nit=" + nit + 
                 ", direccion=" + direccion + 
