@@ -29,8 +29,10 @@ public class Menu {
                     acciones.addUsuario();
                     break;
                 case 2:
+                    acciones.editUsuario();
                     break;
                 case 3:
+                    acciones.deleteUsuario();
                     break;
                 case 4:
                     dataBase.showUsuarios();
@@ -39,13 +41,22 @@ public class Menu {
                     acciones.addVehiculo();
                     break;
                 case 6:
+                    acciones.editVehiculo();
                     break;
                 case 7:
+                    acciones.deleteVehiculo();
                     break;
                 case 8:
                     dataBase.showVehiculos();
                     break;
                 case 9:
+                    //rentar vehiculo
+                    break;
+                case 10:
+                    //devolver vehiculo
+                    break;
+                case 11:
+                    //consultar renta
                     break;
                 case 0:
                     break;

@@ -10,11 +10,11 @@ public class DataBase {
 
     public RandomAccessFile dataBase;
     public File archivo;
-    
-    public void connectDataBase(String nombreArchivo) throws IOException {
+
+    public void connectDataBase(String nombreArchivo, long position) throws IOException {
         archivo = new File(nombreArchivo);
         dataBase = new RandomAccessFile(archivo, "rw");
-        dataBase.seek(0);
+        dataBase.seek(position);
     }
 
     public void disconnectDataBase() throws IOException {
@@ -25,7 +25,7 @@ public class DataBase {
 
     public void create(Usuario usuario) {
         try {
-            connectDataBase("Usuarios/"+usuario.getDpi() + ".txt");
+            connectDataBase("Usuarios/" + usuario.getDpi() + ".txt", 0);
             dataBase.writeBoolean(usuario.isActivo());
             dataBase.writeLong(usuario.getDpi());
             dataBase.writeInt(usuario.getNit());
@@ -48,7 +48,7 @@ public class DataBase {
 
     public void create(Vehiculo vehiculo) {
         try {
-            connectDataBase("Vehiculos/" + vehiculo.getPlaca() + ".txt");
+            connectDataBase("Vehiculos/" + vehiculo.getPlaca() + ".txt", 0);
             dataBase.writeBoolean(vehiculo.isActivo());
             dataBase.writeUTF(setLength(vehiculo.getPlaca(), 7));
             dataBase.writeUTF(setLength(vehiculo.getMarca(), 10));
@@ -72,19 +72,21 @@ public class DataBase {
         for (File file : listOfFiles) {
             if (file.isFile()) {
                 try {
-                    System.out.println(file.getName());
-                    connectDataBase(file.getName());
+                    //System.out.println(file.getName());
+                    connectDataBase("Usuarios/" + file.getName(), 0);
                     System.out.println("");
-                    boolean active = dataBase.readBoolean();
+                    boolean active = true;
+                    active = dataBase.readBoolean();
                     if (active) {
-                        System.out.println("DPI: " +          dataBase.readLong());
-                        System.out.println("NIT: " +          dataBase.readInt());
-                        System.out.println("Nombres: " +      dataBase.readUTF());
-                        System.out.println("Apellidos: " +    dataBase.readUTF());
-                        System.out.println("Dirección: " +    dataBase.readUTF());
+                        System.out.println("DPI: " + dataBase.readLong());
+                        System.out.println("NIT: " + dataBase.readInt());
+                        System.out.println("Nombres: " + dataBase.readUTF());
+                        System.out.println("Apellidos: " + dataBase.readUTF());
+                        System.out.println("Profesion: " + dataBase.readUTF());
+                        System.out.println("Dirección: " + dataBase.readUTF());
                         System.out.println("F Nacimineto: " + dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
-                        System.out.println("F Registro: " +   dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
-                    }else{
+                        System.out.println("F Registro: " + dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
+                    } else {
                     }
                     disconnectDataBase();
                 } catch (IOException ex) {
@@ -93,13 +95,13 @@ public class DataBase {
             }
         }
     }
-    
-    public void showVehiculos(){
+
+    public void showVehiculos() {
         File folder = new File("Vehiculos/");
         File[] listOfFiles = folder.listFiles();
         for (File file : listOfFiles) {
             try {
-                connectDataBase(file.getName());
+                connectDataBase(file.getName(), 0);
                 System.out.println("");
                 if (dataBase.readBoolean()) {
                     System.out.println("Placa: " + dataBase.readUTF());
@@ -118,6 +120,19 @@ public class DataBase {
         }
     }
 
+    public void delete(String path){
+        try {
+            connectDataBase(path, 0);
+            dataBase.seek(dataBase.length()-1);
+            if (!dataBase.readBoolean()) {
+                dataBase.writeBoolean(false);
+            }
+            disconnectDataBase();
+        } catch (IOException ex) {
+            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public String setLength(String str, int size) {
         String newString = "";
         if (str.length() == size) {
