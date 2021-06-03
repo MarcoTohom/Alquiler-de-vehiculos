@@ -50,13 +50,13 @@ public class Menu {
                     dataBase.showVehiculos();
                     break;
                 case 9:
-                    //rentar vehiculo
+                    acciones.addAlquiler();
                     break;
                 case 10:
                     //devolver vehiculo
                     break;
                 case 11:
-                    //consultar renta
+                    dataBase.showAlquiler();
                     break;
                 case 0:
                     break;

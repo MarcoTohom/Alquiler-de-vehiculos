@@ -65,43 +65,60 @@ public class DataBase {
         }
     }
 
-    public void showUsuarios() {
-        File folder = new File("Usuarios/");
-        File[] listOfFiles = folder.listFiles();
+    public void create(Alquiler alquiler) {
+        try {
+            connectDataBase("Alquiler/alquilando.txt", 0);
+            dataBase.writeBoolean(alquiler.isActivo());
+            dataBase.writeUTF(alquiler.getDpi());
+            dataBase.writeUTF(alquiler.getPlaca());
+            dataBase.writeShort(alquiler.getFechaEntrega()[0]);
+            dataBase.writeShort(alquiler.getFechaEntrega()[1]);
+            dataBase.writeShort(alquiler.getFechaEntrega()[2]);
+            dataBase.writeShort(alquiler.getFechaDevolucion()[0]);
+            dataBase.writeShort(alquiler.getFechaDevolucion()[1]);
+            dataBase.writeShort(alquiler.getFechaDevolucion()[2]);
+            disconnectDataBase();
+        } catch (IOException ex) {
+            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                try {
-                    //System.out.println(file.getName());
-                    connectDataBase("Usuarios/" + file.getName(), 0);
-                    System.out.println("");
-                    boolean active = true;
-                    active = dataBase.readBoolean();
-                    if (active) {
-                        System.out.println("DPI: " + dataBase.readLong());
-                        System.out.println("NIT: " + dataBase.readInt());
-                        System.out.println("Nombres: " + dataBase.readUTF());
-                        System.out.println("Apellidos: " + dataBase.readUTF());
-                        System.out.println("Profesion: " + dataBase.readUTF());
-                        System.out.println("Dirección: " + dataBase.readUTF());
-                        System.out.println("F Nacimineto: " + dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
-                        System.out.println("F Registro: " + dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
-                    } else {
-                    }
-                    disconnectDataBase();
-                } catch (IOException ex) {
-                    Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+    public void showUsuarios() {
+        try {
+            File folder = new File("Usuarios/");
+            File[] listOfFiles = folder.listFiles();
+
+            for (File file : listOfFiles) {
+                //System.out.println(file.getName());
+                connectDataBase("Usuarios/" + file.getName(), 0);
+                System.out.println("");
+                boolean active = true;
+                active = dataBase.readBoolean();
+                if (active) {
+                    System.out.println("DPI: " + dataBase.readLong());
+                    System.out.println("NIT: " + dataBase.readInt());
+                    System.out.println("Nombres: " + dataBase.readUTF());
+                    System.out.println("Apellidos: " + dataBase.readUTF());
+                    System.out.println("Profesion: " + dataBase.readUTF());
+                    System.out.println("Dirección: " + dataBase.readUTF());
+                    System.out.println("F Nacimineto: " + dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
+                    System.out.println("F Registro: " + dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
                 }
+                disconnectDataBase();
             }
+        } catch (NullPointerException npe) {
+            System.out.println("No hay vehículos");
+        } catch (IOException ex) {
+            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void showVehiculos() {
-        File folder = new File("Vehiculos/");
-        File[] listOfFiles = folder.listFiles();
-        for (File file : listOfFiles) {
-            try {
-                connectDataBase(file.getName(), 0);
+        try {
+            File folder = new File("Vehiculos/");
+            File[] listOfFiles = folder.listFiles();
+            for (File file : listOfFiles) {
+                connectDataBase("Vehiculos/" + file.getName(), 0);
                 System.out.println("");
                 if (dataBase.readBoolean()) {
                     System.out.println("Placa: " + dataBase.readUTF());
@@ -114,25 +131,55 @@ public class DataBase {
                     System.out.println("Color: " + dataBase.readUTF());
                 }
                 disconnectDataBase();
-            } catch (IOException ex) {
-                Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (NullPointerException npe) {
+            System.out.println("No hay vehículos");
+        } catch (IOException ex) {
+            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void delete(String path){
+    public void showAlquiler() {
         try {
-            connectDataBase(path, 0);
-            dataBase.seek(dataBase.length()-1);
-            if (!dataBase.readBoolean()) {
-                dataBase.writeBoolean(false);
-            }
+            File file = new File("Alquiler/alquilando.txt");
+            connectDataBase("Alquiler/" + file.getName(), 0);
+            long pointer = 0;
+            do {
+                System.out.println("Estado: " + dataBase.readBoolean());
+                System.out.println("Cliente: " + dataBase.readUTF());
+                System.out.println("Vehiculo: " + dataBase.readUTF());
+                System.out.println("Fecha de registro: " + dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
+                System.out.println("Fecha de devolucion: " + dataBase.readShort() + "/" + dataBase.readShort() + "/" + dataBase.readShort());
+                pointer = dataBase.getFilePointer();
+            } while (pointer < dataBase.length());
+
             disconnectDataBase();
         } catch (IOException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    public void delete(String path) {
+        try {
+            connectDataBase(path, 0);
+            dataBase.writeBoolean(false);
+            disconnectDataBase();
+        } catch (IOException ex) {
+            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public boolean isAlquilado(String path) {
+        try {
+            connectDataBase("Vehiculos/" + path, 0);
+            dataBase.seek(dataBase.length() - 1);
+            return dataBase.readBoolean();
+        } catch (IOException ex) {
+            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public String setLength(String str, int size) {
         String newString = "";
         if (str.length() == size) {
